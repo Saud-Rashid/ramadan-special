@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramadan Special 🌙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #FFD700; --light-gold: #ffec85; }
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, #050a18 0%, #0a192f 50%, #112240 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            font-family: 'Poppins', sans-serif; color: white; overflow-x: hidden; position: relative;
+        }
+        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: twinkle var(--duration) infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+        .moon { position: absolute; top: 40px; right: 8%; width: 70px; height: 70px; background: transparent; border-radius: 50%; box-shadow: -15px 10px 0 5px var(--gold); filter: drop-shadow(0 0 15px var(--gold)); z-index: 1; }
+        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 215, 0, 0.2); padding: 40px 30px; border-radius: 30px; width: 90%; max-width: 550px; text-align: center; z-index: 2; box-shadow: 0 25px 50px rgba(0,0,0,0.6); margin: 20px; }
+        h1 { font-family: 'Amiri', serif; color: var(--gold); font-size: 2.2rem; margin: 0; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+        .crush-name { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+        .ramadan-day { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; color: var(--light-gold); margin-bottom: 25px; }
+        #countdown { font-size: 1.8rem; font-weight: 600; background: rgba(255, 215, 0, 0.1); padding: 12px 30px; border-radius: 50px; display: inline-block; border: 1px solid var(--gold); color: var(--gold); margin-bottom: 35px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+        .content-section { text-align: left; margin: 20px 0; padding: 15px 20px; border-radius: 15px; background: rgba(255, 255, 255, 0.03); }
+        .dua-list, .message-list { list-style: none; padding: 0; margin: 0; }
+        .item { font-size: 1.05rem; line-height: 1.6; margin-bottom: 12px; padding-left: 30px; position: relative; }
+        .dua-item::before { content: "🤲"; position: absolute; left: 0; }
+        .message-item::before { content: "💌"; position: absolute; left: 0; }
+        .divider { height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 25px 0; opacity: 0.5; }
+        .footer-icons { margin-top: 25px; font-size: 1.5rem; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="stars-container" id="stars"></div>
+    <div class="moon"></div>
+    <div class="card">
+        <h1>Ramadan Mubarak</h1>
+        <span class="crush-name" id="userName">Dalia Nawshin Kongkon ✨</span>
+        <div class="ramadan-day" id="ramadanDay">Loading Day...</div>
+        <div id="countdown">Calculating...</div>
+        <div class="content-section">
+            <ul class="dua-list" id="duaList"></ul>
+        </div>
+        <div class="divider"></div>
+        <div class="content-section">
+            <ul class="message-list" id="messageList"></ul>
+        </div>
+        <div class="footer-icons">🕌 📿 🌙</div>
+    </div>
+
+    <script>
+        // Configuration
+        const CRUSH_NAME = "Dalia Nawshin Kongkon";
+        const RAMADAN_START_DATE = "2026-02-19"; 
+
+        const duas = [
+            "May Allah accept your fasting 🤲",
+            "May your duas shine brighter than the moon 🌙",
+            "May Allah grant you endless peace 💚"
+        ];
+        const messages = [
+            "Someone is making dua for you tonight 🤍",
+            "You glow brighter than Ramadan moon 🌙",
+            "Your smile feels like Eid morning 💖"
+        ];
+
+        
+        document.getElementById('userName').innerText = CRUSH_NAME + " ✨";
+        const duaList = document.getElementById('duaList');
+        duas.forEach(d => {
+            let li = document.createElement('li');
+            li.className = "item dua-item";
+            li.innerText = d;
+            duaList.appendChild(li);
+        });
+
+        const msgList = document.getElementById('messageList');
+        messages.forEach(m => {
+            let li = document.createElement('li');
+            li.className = "item message-item";
+            li.innerText = m;
+            msgList.appendChild(li);
+        });
+
+        
+        const diffTime = Math.abs(new Date() - new Date(RAMADAN_START_DATE));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('ramadanDay').innerText = "Day — " + diffDays;
+
+        
+        async function getIftarTime() {
+            try {
+                const today = new Date();
+                const dateStr = `${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}`;
+                const response = await fetch(`https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=Rajshahi&country=Bangladesh`);
+                const data = await response.json();
+                const maghribTime = data.data.timings.Maghrib;
+                
+                const iftarDate = new Date(today.toDateString() + ' ' + maghribTime);
+                startCountdown(iftarDate.getTime());
+            } catch (error) {
+                document.getElementById('countdown').innerText = "Error loading time";
+            }
+        }
+
+        function startCountdown(targetTime) {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetTime - now;
+                if (distance < 0) {
+                    document.getElementById("countdown").innerHTML = "🌙 Iftar Time!";
+                    return;
+                }
+                const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+                const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+                const seconds = Math.floor((distance % (1000*60)) / 1000);
+                document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s";
+            }, 1000);
+        }
+
+        getIftarTime();
+
+        
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 'px';
+            star.style.width = size; star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
