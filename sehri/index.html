@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Midnight Surprise 🌙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Dancing+Script:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #b8860b;
+            --glass: rgba(255, 215, 0, 0.1);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #030712; font-family: 'Poppins', sans-serif;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Animated Stars Background */
+        #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; transition: 2s; }
+
+        /* Lantern Styling */
+        .lantern-wrapper {
+            position: relative; z-index: 10; cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lantern {
+            width: 180px; height: auto;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));
+            transition: all 1.2s ease;
+        }
+
+        /* Glowing Effect when lit */
+        .lantern.lit {
+            filter: drop-shadow(0 0 40px var(--gold)) brightness(1.2);
+            transform: scale(1.05);
+        }
+
+        /* Secret Note */
+        .note-card {
+            position: absolute; bottom: -100%; left: 50%;
+            transform: translateX(-50%); width: 85%; max-width: 420px;
+            background: linear-gradient(to bottom, #fffaf0, #fff);
+            padding: 40px 30px; border-radius: 25px;
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.8);
+            transition: 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20; text-align: center;
+            border: 2px solid var(--gold);
+        }
+
+        .note-card.show { bottom: 8%; }
+
+        .note-card h2 {
+            font-family: 'Amiri', serif; color: var(--dark-gold);
+            margin: 0; font-size: 2rem; border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .note-card p {
+            font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+            line-height: 1.6; color: #333; margin: 25px 0;
+        }
+
+        .instruction {
+            color: #777; margin-top: 30px; font-size: 0.85rem;
+            letter-spacing: 2px; text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; }
+        }
+
+        /* The Gold Lattice (Mashrabiya) Effect */
+        .lattice { fill: #222; transition: 1s; }
+        .lantern.lit .lattice { fill: var(--gold); }
+        .glass-pane { fill: #111; transition: 1s; }
+        .lantern.lit .glass-pane { fill: #fff3b0; }
+
+    </style>
+</head>
+<body onclick="activateMagic()">
+
+    <div id="stars"></div>
+
+    <div class="lantern-wrapper" id="lanternMain">
+        <!-- Detailed Original Arabic Lantern SVG -->
+        <svg class="lantern" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Top Hook -->
+            <circle cx="100" cy="20" r="12" stroke="#444" stroke-width="4"/>
+            
+            <!-- Top Cap -->
+            <path d="M100 35 L150 80 L50 80 Z" fill="#333" class="lattice"/>
+            <path d="M60 80 L140 80 L150 100 L50 100 Z" fill="#222" class="lattice"/>
+
+            <!-- Main Body Panels -->
+            <rect x="55" y="100" width="90" height="140" class="glass-pane"/>
+            
+            <!-- Lattice Work (Jali Design) -->
+            <path d="M55 100 H145 V240 H55 V100 Z" stroke="#444" stroke-width="8" class="lattice"/>
+            <path d="M55 135 H145 M55 170 H145 M55 205 H145" stroke="#333" stroke-width="2" class="lattice"/>
+            <path d="M85 100 V240 M115 100 V240" stroke="#333" stroke-width="2" class="lattice"/>
+            
+            <!-- Decorative Arches inside lattice -->
+            <path d="M70 115 Q100 90 130 115" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
+            <path d="M70 150 Q100 125 130 150" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
+            <path d="M70 185 Q100 160 130 185" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
+            <path d="M70 220 Q100 195 130 220" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
+
+            <!-- Bottom Cap -->
+            <path d="M50 240 L150 240 L140 270 L60 270 Z" fill="#222" class="lattice"/>
+            <rect x="80" y="270" width="40" height="15" fill="#333" class="lattice"/>
+        </svg>
+        <p class="instruction" id="hint">ফানুসটি জ্বালিয়ে সেহরি শেষ করো...</p>
+    </div>
+
+    <div class="note-card" id="note">
+        <h2>Dalia Nawshin Kongkon ✨</h2>
+        <p>
+            "এই শান্ত সেহরিতে যখন পুরো পৃথিবী ঘুমে, <br>
+            তখন আমার সবটুকু দোয়ায় শুধু তোমার নাম। <br>
+            আল্লাহ তোমার প্রতিটি রোজা এবং দোয়া কবুল করুন।"
+        </p>
+        <div style="font-size: 0.9rem; color: #999; font-style: italic; border-top: 1px solid #eee; padding-top: 15px;">
+            🌙 সেহরি মোবারক! অনেক অনেক দোয়া for you.
+        </div>
+    </div>
+
+    <script>
+        // Generate Stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2.5 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        let magicActive = false;
+        function activateMagic() {
+            if(magicActive) return;
+            magicActive = true;
+
+            const lantern = document.querySelector('.lantern');
+            const note = document.getElementById('note');
+            const lanternMain = document.getElementById('lanternMain');
+
+            // 1. Light up lantern
+            lantern.classList.add('lit');
+            
+            // 2. Stars fade in
+            document.querySelectorAll('.star').forEach(s => {
+                s.style.opacity = Math.random() * 0.8 + 0.2;
+            });
+
+            // 3. Background subtle glow
+            document.body.style.background = "radial-gradient(circle, #1a1a2e 0%, #030712 100%)";
+            
+            // 4. Hide hint
+            document.getElementById('hint').style.display = 'none';
+
+            // 5. Reveal Note
+            setTimeout(() => {
+                note.classList.add('show');
+                lanternMain.style.transform = 'translateY(-120px)';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
