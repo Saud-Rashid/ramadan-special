@@ -3,176 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Midnight Surprise 🌙</title>
+    <title>Sehri Magic 🌙</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Dancing+Script:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #FFD700;
-            --dark-gold: #b8860b;
-            --glass: rgba(255, 215, 0, 0.1);
-        }
-
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #030712; font-family: 'Poppins', sans-serif;
+            background: #02040a; font-family: 'Poppins', sans-serif;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Animated Stars Background */
+        /* Stars Background */
         #stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .star { position: absolute; background: white; border-radius: 50%; opacity: 0; transition: 2s; }
 
-        /* Lantern Styling */
-        .lantern-wrapper {
+        /* Lantern Container - Swaying Animation */
+        .lantern-container {
             position: relative; z-index: 10; cursor: pointer;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: sway 4s ease-in-out infinite;
+            transform-origin: top center;
+            top: -50px;
         }
 
-        .lantern {
-            width: 180px; height: auto;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));
-            transition: all 1.2s ease;
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
         }
 
-        /* Glowing Effect when lit */
-        .lantern.lit {
-            filter: drop-shadow(0 0 40px var(--gold)) brightness(1.2);
-            transform: scale(1.05);
+        .lantern-svg {
+            width: 220px; height: auto;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            transition: 1.5s all ease-in-out;
         }
 
-        /* Secret Note */
-        .note-card {
-            position: absolute; bottom: -100%; left: 50%;
-            transform: translateX(-50%); width: 85%; max-width: 420px;
-            background: linear-gradient(to bottom, #fffaf0, #fff);
-            padding: 40px 30px; border-radius: 25px;
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.8);
-            transition: 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 20; text-align: center;
-            border: 2px solid var(--gold);
-        }
-
-        .note-card.show { bottom: 8%; }
-
-        .note-card h2 {
-            font-family: 'Amiri', serif; color: var(--dark-gold);
-            margin: 0; font-size: 2rem; border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .note-card p {
-            font-family: 'Dancing Script', cursive; font-size: 1.4rem;
-            line-height: 1.6; color: #333; margin: 25px 0;
-        }
+        /* Glass Panels Animation */
+        .glass { opacity: 0.1; transition: 1.5s; }
+        .lantern-svg.lit .glass-blue { fill: #00d4ff; opacity: 0.9; filter: drop-shadow(0 0 15px #00d4ff); }
+        .lantern-svg.lit .glass-red { fill: #ff2e2e; opacity: 0.9; filter: drop-shadow(0 0 15px #ff2e2e); }
+        .lantern-svg.lit .glass-gold { fill: #ffcc00; opacity: 0.9; filter: drop-shadow(0 0 25px #ffcc00); }
+        .lantern-svg.lit .glass-purple { fill: #bd00ff; opacity: 0.9; filter: drop-shadow(0 0 15px #bd00ff); }
+        
+        /* Gold Frame Glow */
+        .frame { fill: #332b00; transition: 1.5s; }
+        .lantern-svg.lit .frame { fill: url(#goldGradient); filter: drop-shadow(0 0 5px #ffd700); }
 
         .instruction {
-            color: #777; margin-top: 30px; font-size: 0.85rem;
-            letter-spacing: 2px; text-transform: uppercase;
-            animation: pulse 2s infinite;
+            color: #444; margin-top: 40px; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 3px;
+            text-align: center; position: absolute; width: 100%; bottom: -60px;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; }
+        /* The Secret Note */
+        .note {
+            position: absolute; bottom: -100%; left: 50%;
+            transform: translateX(-50%); width: 85%; max-width: 400px;
+            background: linear-gradient(145deg, #fff9e6, #ffffff);
+            padding: 35px 25px; border-radius: 30px;
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.8);
+            transition: 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20; text-align: center;
+            border: 2px solid #ffd700;
         }
+        .note.show { bottom: 10%; }
 
-        /* The Gold Lattice (Mashrabiya) Effect */
-        .lattice { fill: #222; transition: 1s; }
-        .lantern.lit .lattice { fill: var(--gold); }
-        .glass-pane { fill: #111; transition: 1s; }
-        .lantern.lit .glass-pane { fill: #fff3b0; }
-
+        h2 { font-family: 'Amiri', serif; color: #8a6d3b; margin: 0; font-size: 2rem; }
+        p { font-family: 'Dancing Script', cursive; font-size: 1.3rem; color: #333; margin: 20px 0; line-height: 1.6; }
     </style>
 </head>
-<body onclick="activateMagic()">
+<body onclick="lightLantern()">
 
     <div id="stars"></div>
 
-    <div class="lantern-wrapper" id="lanternMain">
-        <!-- Detailed Original Arabic Lantern SVG -->
-        <svg class="lantern" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Top Hook -->
-            <circle cx="100" cy="20" r="12" stroke="#444" stroke-width="4"/>
-            
-            <!-- Top Cap -->
-            <path d="M100 35 L150 80 L50 80 Z" fill="#333" class="lattice"/>
-            <path d="M60 80 L140 80 L150 100 L50 100 Z" fill="#222" class="lattice"/>
+    <div class="lantern-container" id="mainObj">
+        <svg class="lantern-svg" id="lantern" viewBox="0 0 200 320">
+            <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#bf953f" />
+                    <stop offset="25%" style="stop-color:#fcf6ba" />
+                    <stop offset="50%" style="stop-color:#b38728" />
+                    <stop offset="75%" style="stop-color:#fcf6ba" />
+                    <stop offset="100%" style="stop-color:#aa771c" />
+                </linearGradient>
+            </defs>
 
-            <!-- Main Body Panels -->
-            <rect x="55" y="100" width="90" height="140" class="glass-pane"/>
+            <!-- Hanging Chain -->
+            <rect x="98" y="0" width="4" height="40" fill="#444" class="frame"/>
             
-            <!-- Lattice Work (Jali Design) -->
-            <path d="M55 100 H145 V240 H55 V100 Z" stroke="#444" stroke-width="8" class="lattice"/>
-            <path d="M55 135 H145 M55 170 H145 M55 205 H145" stroke="#333" stroke-width="2" class="lattice"/>
-            <path d="M85 100 V240 M115 100 V240" stroke="#333" stroke-width="2" class="lattice"/>
+            <!-- Top Dome -->
+            <path class="frame" d="M100 40 C60 40 50 80 50 80 L150 80 C150 80 140 40 100 40Z" />
+            <path class="frame" d="M45 80 H155 V95 H45 Z" />
+
+            <!-- Main Body Panels (Colored Glass) -->
+            <!-- Left Panel -->
+            <path class="glass glass-blue" d="M50 95 L30 220 L75 220 L75 95 Z" />
+            <!-- Middle Panel -->
+            <path class="glass glass-gold" d="M75 95 L75 220 L125 220 L125 95 Z" />
+            <!-- Right Panel -->
+            <path class="glass glass-red" d="M125 95 L125 220 L170 220 L150 95 Z" />
+
+            <!-- Decorative Gold Frame / Grid -->
+            <path class="frame" d="M50 95 L30 220 L170 220 L150 95 Z" fill="none" stroke-width="6" stroke="#222"/>
+            <line class="frame" x1="75" y1="95" x2="75" y2="220" stroke="#222" stroke-width="4"/>
+            <line class="frame" x1="125" y1="95" x2="125" y2="220" stroke="#222" stroke-width="4"/>
             
-            <!-- Decorative Arches inside lattice -->
-            <path d="M70 115 Q100 90 130 115" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
-            <path d="M70 150 Q100 125 130 150" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
-            <path d="M70 185 Q100 160 130 185" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
-            <path d="M70 220 Q100 195 130 220" stroke="#333" stroke-width="2" fill="none" class="lattice"/>
+            <!-- Ornate Details (Jali) -->
+            <circle class="frame" cx="100" cy="130" r="15" stroke="#222" stroke-width="2" fill="none" opacity="0.5"/>
+            <circle class="frame" cx="100" cy="180" r="15" stroke="#222" stroke-width="2" fill="none" opacity="0.5"/>
 
             <!-- Bottom Cap -->
-            <path d="M50 240 L150 240 L140 270 L60 270 Z" fill="#222" class="lattice"/>
-            <rect x="80" y="270" width="40" height="15" fill="#333" class="lattice"/>
+            <path class="frame" d="M30 220 L170 220 L150 250 L50 250 Z" />
+            <path class="frame" d="M100 300 L70 250 L130 250 Z" />
+            <circle class="frame" cx="100" cy="310" r="8" />
         </svg>
-        <p class="instruction" id="hint">ফানুসটি জ্বালিয়ে সেহরি শেষ করো...</p>
+        <div class="instruction" id="hint">ফানুসটি জ্বালিয়ে সেহরি শুরু করো...</div>
     </div>
 
-    <div class="note-card" id="note">
+    <div class="note" id="note">
         <h2>Dalia Nawshin Kongkon ✨</h2>
         <p>
-            "এই শান্ত সেহরিতে যখন পুরো পৃথিবী ঘুমে, <br>
-            তখন আমার সবটুকু দোয়ায় শুধু তোমার নাম। <br>
-            আল্লাহ তোমার প্রতিটি রোজা এবং দোয়া কবুল করুন।"
+            "এই নিঝুম রাতে যখন আকাশভরা তারা, <br>
+            তখন আমার প্রতিটি মোনাজাতে শুধু তোমার নাম। <br>
+            আল্লাহ তোমার সেহরি ও রোজা কবুল করুন।"
         </p>
-        <div style="font-size: 0.9rem; color: #999; font-style: italic; border-top: 1px solid #eee; padding-top: 15px;">
-            🌙 সেহরি মোবারক! অনেক অনেক দোয়া for you.
+        <div style="font-size: 0.8rem; color: #aaa; border-top: 1px solid #eee; padding-top: 15px;">
+            🌙 সেহরি মোবারক! সবসময় হাসিখুশি থেকো।
         </div>
     </div>
 
     <script>
-        // Generate Stars
+        // Stars Logic
         const starsContainer = document.getElementById('stars');
         for (let i = 0; i < 150; i++) {
             const star = document.createElement('div');
             star.className = 'star';
-            const size = Math.random() * 2.5 + 'px';
-            star.style.width = size;
-            star.style.height = size;
+            const size = Math.random() * 2 + 'px';
+            star.style.width = size; star.style.height = size;
             star.style.top = Math.random() * 100 + '%';
             star.style.left = Math.random() * 100 + '%';
             star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
             starsContainer.appendChild(star);
         }
 
-        let magicActive = false;
-        function activateMagic() {
-            if(magicActive) return;
-            magicActive = true;
+        let activated = false;
+        function lightLantern() {
+            if(activated) return;
+            activated = true;
 
-            const lantern = document.querySelector('.lantern');
-            const note = document.getElementById('note');
-            const lanternMain = document.getElementById('lanternMain');
+            document.getElementById('lantern').classList.add('lit');
+            document.getElementById('hint').style.opacity = '0';
+            document.body.style.background = "radial-gradient(circle, #1a1000 0%, #02040a 100%)";
 
-            // 1. Light up lantern
-            lantern.classList.add('lit');
-            
-            // 2. Stars fade in
-            document.querySelectorAll('.star').forEach(s => {
-                s.style.opacity = Math.random() * 0.8 + 0.2;
-            });
+            // Stars fade in
+            document.querySelectorAll('.star').forEach(s => s.style.opacity = Math.random());
 
-            // 3. Background subtle glow
-            document.body.style.background = "radial-gradient(circle, #1a1a2e 0%, #030712 100%)";
-            
-            // 4. Hide hint
-            document.getElementById('hint').style.display = 'none';
-
-            // 5. Reveal Note
             setTimeout(() => {
-                note.classList.add('show');
-                lanternMain.style.transform = 'translateY(-120px)';
-            }, 800);
+                document.getElementById('note').classList.add('show');
+                document.getElementById('mainObj').style.transform = 'translateY(-130px) scale(0.8)';
+            }, 1000);
         }
     </script>
 </body>
