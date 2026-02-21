@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishing Stars 🌙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Dancing+Script:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a1325 0%, #02050a 100%);
+            font-family: 'Poppins', sans-serif; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Ambient Stars */
+        #sky { position: absolute; width: 100%; height: 100%; z-index: 0; }
+        .bg-star { position: absolute; background: white; border-radius: 50%; opacity: 0.3; }
+
+        /* The Moving & Glowing Stars */
+        .wishing-star-container {
+            position: absolute;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10;
+        }
+
+        /* Moving Animation */
+        @keyframes floatAround {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(30px, -40px); }
+            50% { transform: translate(-20px, -70px); }
+            75% { transform: translate(-40px, -20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .star-shape {
+            width: 15px; height: 15px;
+            background: #fff;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8);
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* Pulsing Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: drop-shadow(0 0 10px #FFD700); 
+                background: #fff;
+            }
+            50% { 
+                transform: scale(1.4); 
+                filter: drop-shadow(0 0 30px #FFD700); 
+                background: #FFD700;
+            }
+        }
+
+        /* Modal / Popup */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center; z-index: 100;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            padding: 40px 30px; border-radius: 30px;
+            text-align: center; max-width: 380px; width: 85%;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+            transform: scale(0.8); transition: 0.5s;
+        }
+
+        .modal.active { display: flex; }
+        .modal.active .modal-content { transform: scale(1); }
+
+        h2 { font-family: 'Amiri', serif; color: #FFD700; margin: 0; font-size: 2rem; }
+        p { font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: #fff; margin: 25px 0; line-height: 1.6; }
+        
+        .close-btn {
+            color: #FFD700; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 2px; cursor: pointer; border: 1px solid #FFD700;
+            padding: 10px 25px; border-radius: 30px; transition: 0.3s;
+            display: inline-block;
+        }
+        .close-btn:hover { background: #FFD700; color: #000; }
+
+        .hint {
+            position: absolute; bottom: 40px; color: rgba(255, 255, 255, 0.3);
+            font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+            text-align: center; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sky"></div>
+    
+    <div class="hint">আকাশের ভাসমান তারাগুলো ছুঁয়ে দেখো...</div>
+
+    <!-- Interactive Moving Stars -->
+    <div class="wishing-star-container" style="top: 20%; left: 15%; animation: floatAround 12s infinite linear;" onclick="openStar(0)">
+        <div class="star-shape"></div>
+    </div>
+
+    <div class="wishing-star-container" style="top: 45%; left: 70%; animation: floatAround 15s infinite linear reverse;" onclick="openStar(1)">
+        <div class="star-shape"></div>
+    </div>
+
+    <div class="wishing-star-container" style="top: 70%; left: 35%; animation: floatAround 18s infinite linear;" onclick="openStar(2)">
+        <div class="star-shape"></div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal" id="starModal" onclick="closeStar()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 id="starTitle">Dalia Nawshin Kongkon ✨</h2>
+            <p id="starText"></p>
+            <div class="close-btn" onclick="closeStar()">Close</div>
+        </div>
+    </div>
+
+    <script>
+        // Create dynamic background stars
+        const sky = document.getElementById('sky');
+        for (let i = 0; i < 200; i++) {
+            const s = document.createElement('div');
+            s.className = 'bg-star';
+            const size = Math.random() * 2 + 'px';
+            s.style.width = s.style.height = size;
+            s.style.top = Math.random() * 100 + '%';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.opacity = Math.random() * 0.5 + 0.1;
+            sky.appendChild(s);
+        }
+
+        const messages = [
+            "আজকের সেহরির নিস্তব্ধতায় ওই উজ্জ্বল তারাটির মতো তোমার জীবনও যেন সবসময় আলোকিত থাকে। আমীন।",
+            "সবাই তো দিনের আলোয় প্রার্থনা করে, আমি এই গভীর রাতে জ্বলজ্বলে তারাদের সাক্ষী রেখে তোমার জন্য দোয়া করলাম।",
+            "জানতাম তুমি এখন আকাশ দেখছো। এই তারার ভেতরের দোয়াটি শুধু তোমার জন্য— আল্লাহ তোমাকে অনেক সুখে রাখুন।"
+        ];
+
+        function openStar(index) {
+            document.getElementById('starText').innerText = messages[index];
+            document.getElementById('starModal').classList.add('active');
+        }
+
+        function closeStar() {
+            document.getElementById('starModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
