@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Celestial Compass 🧭</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Poppins:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #02050a; font-family: 'Poppins', sans-serif;
+            overflow: hidden; display: flex; align-items: center; justify-content: center; color: white;
+        }
+
+        /* Compass UI */
+        .compass-container { text-align: center; z-index: 10; transition: 1s; }
+        
+        .compass-ring {
+            position: relative; width: 250px; height: 250px;
+            border: 2px solid rgba(255, 215, 0, 0.3); border-radius: 50%;
+            margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;
+        }
+
+        .needle {
+            width: 4px; height: 120px; background: linear-gradient(to top, transparent, #ffd700);
+            border-radius: 4px; position: absolute; bottom: 50%;
+            transform-origin: bottom; transition: 0.1s; box-shadow: 0 0 15px #ffd700;
+        }
+
+        /* Hidden Surprise */
+        .moon-reveal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #02050a 100%);
+            display: none; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; z-index: 100; opacity: 0; transition: 2s;
+        }
+
+        .glowing-moon {
+            width: 100px; height: 100px; background: transparent;
+            border-radius: 50%; box-shadow: -20px 15px 0 5px #ffd700;
+            filter: drop-shadow(0 0 30px #ffd700); margin-bottom: 40px;
+        }
+
+        h1 { font-family: 'Amiri', serif; color: #ffd700; font-size: 2.2rem; }
+        p { font-family: 'Dancing Script', cursive; font-size: 1.5rem; padding: 0 30px; line-height: 1.6; }
+
+        .btn-permission {
+            padding: 15px 30px; background: #ffd700; color: #000;
+            border: none; border-radius: 30px; font-weight: bold; cursor: pointer;
+            font-family: 'Poppins', sans-serif; text-transform: uppercase;
+        }
+
+        .hint { font-size: 0.8rem; color: #ffd700; opacity: 0.6; letter-spacing: 2px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Initial Screen to get Permission -->
+    <div class="compass-container" id="setup">
+        <h1>Connect to Sky</h1>
+        <p style="font-size: 1rem; font-family: 'Poppins';">আজকের সেহরির চাঁদটি খুঁজে পেতে <br> সেন্সর কানেক্ট করো</p>
+        <button class="btn-permission" onclick="startCompass()">Start Compass</button>
+    </div>
+
+    <!-- The Compass UI -->
+    <div class="compass-container" id="ui" style="display: none;">
+        <div class="compass-ring">
+            <div class="needle" id="needle"></div>
+            <div style="color: #ffd700; font-weight: bold;">FINDING MOON...</div>
+        </div>
+        <div class="hint">নিজের জায়গায় দাঁড়িয়ে ধীরে ধীরে <br> ফোনটি হাতে নিয়ে চারদিকে ঘোরো...</div>
+    </div>
+
+    <!-- Final Surprise -->
+    <div class="moon-reveal" id="reveal">
+        <div class="glowing-moon"></div>
+        <h1>Dalia Nawshin Kongkon ✨</h1>
+        <p>
+            "পৃথিবীর ভিড়ে আমরা প্রায়ই দিশা হারিয়ে ফেলি। <br><br>
+            কিন্তু এই শান্ত প্রহর আমাদের শেখায়— <br>
+            সব কোলাহলের ঊর্ধ্বে এক গভীর শান্তি লুকিয়ে আছে। <br><br>
+            আজ যেমন তুমি এই ধ্রুবতারাটি খুঁজে পেলে, <br>
+            প্রার্থনা করি তোমার জীবনও যেন <br> সবসময় সঠিক দিশা খুঁজে পায়।"
+        </p>
+        <div style="font-size: 0.8rem; color: #ffd700; margin-top: 20px; opacity: 0.5;">🌙 সেহরি মোবারক।</div>
+    </div>
+
+    <script>
+        const needle = document.getElementById('needle');
+        const setup = document.getElementById('setup');
+        const ui = document.getElementById('ui');
+        const reveal = document.getElementById('reveal');
+
+        function startCompass() {
+            // Request permission for iOS devices
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response == 'granted') {
+                            initSensor();
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                initSensor();
+            }
+        }
+
+        function initSensor() {
+            setup.style.display = 'none';
+            ui.style.display = 'block';
+
+            window.addEventListener('deviceorientation', function(event) {
+                let alpha = event.alpha; // Rotation around Z axis (0 to 360)
+                if (alpha === null) return;
+
+                // Update needle
+                needle.style.transform = `rotate(${alpha}deg)`;
+
+                // TARGET: Let's say the secret moon is at 180 degrees (South)
+                // If the user points to 180 deg (with some tolerance)
+                if (Math.abs(alpha - 180) < 10) {
+                    showSurprise();
+                }
+            }, true);
+        }
+
+        function showSurprise() {
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate([200, 100, 200]);
+            }
+            ui.style.opacity = '0';
+            setTimeout(() => {
+                ui.style.display = 'none';
+                reveal.style.display = 'flex';
+                setTimeout(() => { reveal.style.opacity = '1'; }, 100);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
