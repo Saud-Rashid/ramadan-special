@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aura Weaver 🌈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #000; overflow: hidden; touch-action: none;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        canvas {
+            position: absolute; top: 0; left: 0;
+            filter: blur(1px) contrast(1.2);
+        }
+
+        .ui-layer {
+            position: absolute; top: 30px; width: 100%;
+            text-align: center; color: rgba(255, 255, 255, 0.4);
+            pointer-events: none; z-index: 10;
+        }
+
+        .status { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
+        
+        .hint {
+            position: absolute; bottom: 40px; width: 100%;
+            text-align: center; color: rgba(255, 215, 0, 0.5);
+            font-size: 0.6rem; letter-spacing: 2px; z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ui-layer">
+        <div class="status" id="status">Syncing Aura...</div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="hint">একের অধিক আঙুল ব্যবহার করে আকার পরিবর্তন করো...</div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('status');
+
+        let points = [];
+        let hue = 0;
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.history = [];
+            }
+            update(x, y) {
+                this.x = x;
+                this.y = y;
+                this.history.push({x, y});
+                if (this.history.length > 20) this.history.shift();
+            }
+        }
+
+        function drawShape() {
+            // Trail Effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (points.length === 0) {
+                status.innerText = "Waiting for Touch...";
+                return;
+            }
+
+            hue += 2;
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = `hsla(${hue}, 100%, 50%, 0.8)`;
+            ctx.strokeStyle = `hsla(${hue}, 100%, 50%, 0.8)`;
+
+            if (points.length === 1) {
+                status.innerText = "Mode: Unity (Orb)";
+                drawOrb(points[0]);
+            } else if (points.length === 2) {
+                status.innerText = "Mode: Relationship (Bridge)";
+                drawBridge(points[0], points[1]);
+            } else {
+                status.innerText = `Mode: Complexity (${points.length} Nodes)`;
+                drawLattice();
+            }
+
+            requestAnimationFrame(drawShape);
+        }
+
+        function drawOrb(p) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 40, 0, Math.PI * 2);
+            ctx.stroke();
+            // Glow center
+            ctx.fillStyle = `hsla(${hue}, 100%, 50%, 0.2)`;
+            ctx.fill();
+        }
+
+        function drawBridge(p1, p2) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+
+            // Intersecting circles
+            ctx.beginPath();
+            ctx.arc(p1.x, p1.y, 20, 0, Math.PI * 2);
+            ctx.arc(p2.x, p2.y, 20, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        function drawLattice() {
+            ctx.beginPath();
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    ctx.moveTo(points[i].x, points[i].y);
+                    ctx.lineTo(points[j].x, points[j].y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            points = [];
+            for (let i = 0; i < e.touches.length; i++) {
+                points.push(new Point(e.touches[i].clientX, e.touches[i].clientY));
+            }
+        }
+
+        // Mouse support (Single point)
+        canvas.addEventListener('mousemove', (e) => {
+            if (e.buttons === 1) {
+                points = [new Point(e.clientX, e.clientY)];
+            }
+        });
+        canvas.addEventListener('mouseup', () => points = []);
+
+        // Touch support (Multi-touch)
+        canvas.addEventListener('touchstart', handleTouch);
+        canvas.addEventListener('touchmove', handleTouch);
+        canvas.addEventListener('touchend', handleTouch);
+
+        window.addEventListener('resize', init);
+
+        init();
+        drawShape();
+    </script>
+</body>
+</html>
