@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Gauge 🌅</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff9d00;
+            --bg: #050505;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); font-family: 'Orbitron', sans-serif;
+            color: white; overflow: hidden; display: flex;
+            align-items: center; justify-content: center;
+            transition: background 3s ease;
+        }
+
+        .dashboard {
+            width: 90%; max-width: 400px; text-align: center;
+            position: relative; z-index: 10;
+        }
+
+        /* The Sun & Horizon System */
+        .sky-system {
+            height: 200px; position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px; overflow: hidden;
+        }
+
+        #sun {
+            width: 60px; height: 60px; background: var(--accent);
+            border-radius: 50%; position: absolute; left: 50%;
+            transform: translateX(-50%); bottom: 100%; /* Dynamic */
+            box-shadow: 0 0 40px var(--accent);
+            transition: bottom 1s linear;
+        }
+
+        /* Technical Labels */
+        .status-box {
+            font-size: 0.7rem; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .clock {
+            font-size: 3rem; font-weight: 700;
+            margin: 10px 0; color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Patience Progress Bar */
+        .meter-label {
+            font-size: 0.6rem; text-align: left;
+            margin-bottom: 5px; opacity: 0.6;
+        }
+
+        .meter-container {
+            width: 100%; height: 6px; background: #1a1a1a;
+            border-radius: 10px; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meter-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(to right, #ff4e50, #f9d423);
+            box-shadow: 0 0 10px #f9d423;
+            transition: width 1s linear;
+        }
+
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            margin-top: 30px; gap: 20px;
+        }
+
+        .info-item {
+            font-family: 'Poppins', sans-serif; font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* After Iftar Styles */
+        body.iftar-mode { background: #020818; --accent: #00d4ff; }
+        .iftar-mode #sun { background: #fff; box-shadow: 0 0 50px #fff; bottom: -80px !important; }
+        .iftar-mode .meter-fill { background: #00d4ff; box-shadow: 0 0 10px #00d4ff; }
+    </style>
+</head>
+<body id="body">
+
+    <div class="dashboard">
+        <div class="status-box" id="sysStatus">System Status: Fasting (Miss Perfect Kongkuu)</div>
+        
+        <div class="sky-system">
+            <div id="sun"></div>
+        </div>
+
+        <div class="clock" id="timer">--:--:--</div>
+
+        <div style="margin-top: 20px;">
+            <div class="meter-label">PATIENCE LEVEL (SABR)</div>
+            <div class="meter-container">
+                <div class="meter-fill" id="pBar"></div>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div style="opacity: 0.5;">Target Iftar</div>
+                <div id="targetTime" style="font-weight: bold;">--:--</div>
+            </div>
+            <div class="info-item">
+                <div style="opacity: 0.5;">Location</div>
+                <div style="font-weight: bold;">Rajshahi, BD</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function initGauge() {
+            try {
+                // Fetching Rajshahi Iftar Time
+                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Rajshahi&country=Bangladesh');
+                const data = await response.json();
+                const maghrib = data.data.timings.Maghrib; // e.g., "18:15"
+                document.getElementById('targetTime').innerText = maghrib;
+
+                const [h, m] = maghrib.split(':');
+                const iftarTime = new Date();
+                iftarTime.setHours(h, m, 0);
+
+                // For testing: set sehri time as the start of the meter
+                const sehriTime = new Date();
+                sehriTime.setHours(4, 30, 0); // ধরি ভোর ৪:৩০ এ শুরু হয়েছিল
+
+                function update() {
+                    const now = new Date();
+                    const totalDuration = iftarTime - sehriTime;
+                    const elapsed = now - sehriTime;
+                    const remaining = iftarTime - now;
+
+                    if (remaining <= 0) {
+                        document.getElementById('timer').innerText = "00:00:00";
+                        document.getElementById('pBar').style.width = "100%";
+                        document.getElementById('sysStatus').innerText = "Status: Peace Achieved ✨";
+                        document.getElementById('body').classList.add('iftar-mode');
+                        return;
+                    }
+
+                    // 1. Update Timer
+                    const hours = Math.floor(remaining / 3600000);
+                    const minutes = Math.floor((remaining % 3600000) / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    document.getElementById('timer').innerText = 
+                        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                    // 2. Update Progress Bar
+                    const progressPercent = Math.min(100, (elapsed / totalDuration) * 100);
+                    document.getElementById('pBar').style.width = progressPercent + "%";
+
+                    // 3. Update Sun Position (100% to 0% height)
+                    // Sun is at top (100%) when sehri, at bottom (0%) when iftar
+                    const sunPos = 100 - progressPercent;
+                    document.getElementById('sun').style.bottom = sunPos + "%";
+
+                    requestAnimationFrame(update);
+                }
+                update();
+
+            } catch (err) {
+                document.getElementById('timer').innerText = "API ERROR";
+            }
+        }
+
+        initGauge();
+    </script>
+</body>
+</html>
