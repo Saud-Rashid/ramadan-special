@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Space</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050505; /* ডিপ ব্ল্যাক */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* মাঝখানের টেক্সট স্টাইল */
+        .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            pointer-events: none; /* যাতে মাউস ইন্টারঅ্যাকশনে বাধা না দেয় */
+            z-index: 1;
+        }
+
+        h1 {
+            font-weight: 200;
+            font-size: 3rem;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            margin: 0;
+            opacity: 0.8;
+            background: linear-gradient(to right, #fff, #555);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        /* নিয়ন বর্ডার বা গ্লাস ইফেক্ট চাইলে */
+        .card {
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <div class="card">
+            <h1 id="name">YOU</h1>
+            <p>In a sky full of stars, I'd still look for you.</p>
+            <p>You are not a part of moon, rather MOON IS A PART OF YOU!!!</p>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const nameDisplay = document.getElementById('name');
+
+        // এখানে তোমার ক্রাশের নাম লিখো
+        const CRUSH_NAME = "DALIA NAWSHIN KONGKON"; 
+        nameDisplay.innerText = CRUSH_NAME;
+
+        let particles = [];
+        const properties = {
+            bgColor: 'rgba(5, 5, 5, 1)',
+            particleColor: 'rgba(255, 255, 255, 0.5)',
+            particleRadius: 1.5,
+            particleCount: 100,
+            particleMaxVelocity: 0.5,
+            lineLength: 150,
+            particleLife: 6,
+        };
+
+        window.onresize = function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.velocityX = Math.random() * (properties.particleMaxVelocity * 2) - properties.particleMaxVelocity;
+                this.velocityY = Math.random() * (properties.particleMaxVelocity * 2) - properties.particleMaxVelocity;
+            }
+
+            position() {
+                this.x + this.velocityX > canvas.width && this.velocityX > 0 || this.x + this.velocityX < 0 && this.velocityX < 0 ? this.velocityX *= -1 : this.velocityX;
+                this.y + this.velocityY > canvas.height && this.velocityY > 0 || this.y + this.velocityY < 0 && this.velocityY < 0 ? this.velocityY *= -1 : this.velocityY;
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+            }
+
+            reDraw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, properties.particleRadius, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fillStyle = properties.particleColor;
+                ctx.fill();
+            }
+        }
+
+        function drawLines() {
+            let x, y, distance, opacity;
+            for (let i in particles) {
+                for (let j in particles) {
+                    x = particles[i].x - particles[j].x;
+                    y = particles[i].y - particles[j].y;
+                    distance = Math.sqrt(x * x + y * y);
+                    if (distance < properties.lineLength) {
+                        opacity = 1 - distance / properties.lineLength;
+                        ctx.lineWidth = '0.5';
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function reDrawBackground() {
+            ctx.fillStyle = properties.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function init() {
+            for (let i = 0; i < properties.particleCount; i++) {
+                particles.push(new Particle());
+            }
+            loop();
+        }
+
+        function loop() {
+            reDrawBackground();
+            for (let i in particles) {
+                particles[i].position();
+                particles[i].reDraw();
+            }
+            drawLines();
+            requestAnimationFrame(loop);
+        }
+
+        init();
+    </script>
+</body>
+</html>
