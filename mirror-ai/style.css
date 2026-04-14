@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+video {
+    width: 100%;
+    border-radius: 10px;
+    transform: scaleX(-1);
+}
+
+input {
+    padding: 10px;
+    width: 90%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+#compliment {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #ff4d6d;
+}
