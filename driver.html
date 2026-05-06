@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    body { margin: 0; }
+    #map { height: 100vh; }
+
+    #box {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+<div id="box">
+  <input id="busId" placeholder="Bus-01"/>
+  <button onclick="start()">Start</button>
+  <p id="status">Idle</p>
+</div>
+
+<div id="map"></div>
+
+<script>
+  const socket = io();
+  let map, marker, watchId;
+
+  // ✅ INIT MAP FIRST (NO WHITE SCREEN)
+  function initMap() {
+    map = L.map('map').setView([23.8103, 90.4125], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    marker = L.marker([23.8103, 90.4125]).addTo(map)
+      .bindPopup("Waiting for GPS...")
+      .openPopup();
+  }
+
+  initMap();
+
+  function start() {
+    const busId = document.getElementById("busId").value.trim();
+    const status = document.getElementById("status");
+
+    if (!busId) {
+      alert("Enter Bus ID");
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      status.innerText = "Geolocation not supported";
+      return;
+    }
+
+    status.innerText = "Starting GPS...";
+
+    watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        marker.setLatLng([lat, lng]);
+        map.setView([lat, lng]);
+
+        marker.setPopupContent("You (Driver)");
+
+        socket.emit("locationUpdate", { busId, lat, lng });
+
+        status.innerText = "Tracking...";
+      },
+      (err) => {
+        status.innerText = "Error: " + err.message;
+        console.error(err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0
+      }
+    );
+  }
+
+  window.addEventListener("beforeunload", () => {
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+    socket.disconnect();
+  });
+</script>
+
+</body>
+</html>
