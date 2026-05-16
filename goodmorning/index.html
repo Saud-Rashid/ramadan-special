@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Morning, Sunshine! ☀️</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-night: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --bg-morning: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            --glass: rgba(255, 255, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--bg-night);
+            transition: background 3s ease;
+        }
+
+        /* Mouse Glow Effect */
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        /* Floating Petals */
+        .petal {
+            position: absolute;
+            background-color: #ffb7c5;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            z-index: 10;
+            text-align: center;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.1);
+            max-width: 400px;
+            transform: rotateX(10deg);
+            transition: 0.5s;
+        }
+
+        .card:hover {
+            transform: rotateX(0deg) scale(1.02);
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        #message {
+            font-size: 1.2rem;
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            min-height: 80px;
+        }
+
+        .btn-morning {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            background: #fff;
+            color: #ff758c;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-morning:hover {
+            background: #ff758c;
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 117, 140, 0.4);
+        }
+
+        /* Sun Animation */
+        .sun {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: #ffd700;
+            border-radius: 50%;
+            top: 100%; /* Hidden initially */
+            left: 10%;
+            box-shadow: 0 0 80px #ffd700;
+            transition: all 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        .sun.rise { top: 10%; left: 15%; }
+
+    </style>
+</head>
+<body>
+
+    <div class="cursor-glow" id="glow"></div>
+    <div class="sun" id="sun"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1 id="title">Awaken?</h1>
+            <div id="message">পৃথিবীর সবচেয়ে সুন্দর মানুষটির জন্য একটি ছোট সারপ্রাইজ...</div>
+            <button class="btn-morning" onclick="revealMagic()" id="mainBtn">ক্লিক করে দেখ</button>
+        </div>
+    </div>
+
+    <!-- Background Music (Optional: Just replace the URL with a direct link to a sweet mp3) -->
+    <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-30.mp3"></audio>
+
+    <script>
+        // Mouse Tracking
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Petal Creation
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.width = Math.random() * 15 + 10 + 'px';
+            petal.style.height = petal.style.width;
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 5000);
+        }
+        setInterval(createPetal, 200);
+
+        // The Big Reveal
+        function revealMagic() {
+            // Sound play
+            document.getElementById('clickSound').play();
+
+            // Background & Sun Transition
+            document.body.style.background = "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)";
+            document.getElementById('sun').classList.add('rise');
+            
+            // Text Changes
+            document.getElementById('title').innerHTML = "Good Morning!";
+            document.getElementById('title').style.color = "#ff4d6d";
+            document.getElementById('mainBtn').style.display = "none";
+
+            const msgElement = document.getElementById('message');
+            const mainText = "আজকের সকালটা তোমার হাসির মতোই স্নিগ্ধ হোক। ঘুম থেকে উঠে আয়নায় নিজেকে দেখে একবার বলো—'আমি সেরা!' কারণ আমার কাছে তুমি সত্যিই স্পেশাল। দিনটা খুব ভালো কাটাও! ❤️";
+            
+            msgElement.innerHTML = "";
+            let i = 0;
+            function typeWriter() {
+                if (i < mainText.length) {
+                    msgElement.innerHTML += mainText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 70);
+                }
+            }
+            typeWriter();
+        }
+    </script>
+</body>
+</html>
