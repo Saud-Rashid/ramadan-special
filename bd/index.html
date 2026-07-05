@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magical Birthday Wish</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- JQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Floating Heart Cursor Script (Restored & Optimized) -->
+  <script type="text/javascript">
+  var colours = ['#ff3366', '#ff6699', '#ff33cc', '#ff99cc', '#ff66b2', '#ff0066']; 
+  var minisize = 16; 
+  var maxisize = 28; 
+  var hearts = 40; 
+  var x = 400, ox = 400, y = 300, oy = 300;
+  var swide = 800, shigh = 600;
+  var sleft = 0, sdown = 0;
+  var herz = [], herzx = [], herzy = [], herzs = [];
+
+  window.onload = function() {
+    if (document.getElementById) {
+      for (var i = 0; i < hearts; i++) {
+        var heart = document.createElement("div");
+        heart.style.position = "absolute";
+        heart.style.visibility = "hidden";
+        heart.style.zIndex = "1001";
+        heart.style.color = colours[i % colours.length];
+        heart.style.pointerEvents = "none";
+        heart.style.opacity = 0.8;
+        heart.appendChild(document.createTextNode(String.fromCharCode(9829)));
+        document.body.appendChild(heart);
+        herz[i] = heart;
+        herzy[i] = false;
+      }
+      set_width();
+      herzle();
+    }
+  }
+
+  function herzle() {
+    if (Math.abs(x - ox) > 1 || Math.abs(y - oy) > 1) {
+      ox = x; oy = y;
+      for (var c = 0; c < hearts; c++) if (herzy[c] === false) {
+        herz[c].style.left = (herzx[c] = x - minisize / 2) + "px";
+        herz[c].style.top = (herzy[c] = y - minisize) + "px";
+        herz[c].style.fontSize = minisize + "px";
+        herz[c].style.visibility = 'visible';
+        herzs[c] = minisize;
+        break;
+      }
+    }
+    for (var c = 0; c < hearts; c++) if (herzy[c] !== false) blow_me_a_kiss(c);
+    setTimeout(herzle, 40);
+  }
+
+  function blow_me_a_kiss(i) {
+    herzy[i] -= herzs[i] / minisize + i % 2;
+    herzx[i] += (i % 5 - 2) / 5;
+    if (herzy[i] < sdown - herzs[i] || herzx[i] < sleft - herzs[i] || herzx[i] > sleft + swide - herzs[i]) {
+      herz[i].style.visibility = "hidden";
+      herzy[i] = false;
+    } else {
+      herz[i].style.top = herzy[i] + "px";
+      herz[i].style.left = herzx[i] + "px";
+    }
+  }
+
+  document.onmousemove = function(e) { if (e) { y = e.pageY; x = e.pageX; } }
+  window.onresize = set_width;
+  function set_width() { swide = window.innerWidth; shigh = window.innerHeight; }
+  </script>
+</head>
+<body>
+
+  <!-- Background Animated Particles -->
+  <div class="bg-animation">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div id="wrapper">
+    <!-- Main Content Grid -->
+    <div class="content">
+      
+      <!-- Left Side Details -->
+      <div class="left">
+        <div class="title-container">
+          <h1 class="main-title">Happy Birthday</h1>
+          <p class="subtitle-name">Dear Cutie Pie</p>
+        </div>
+        
+        <div class="date__of__birth">
+          <i class="fa-solid fa-calendar-days"></i> <span>06 July 2005</span>
+        </div>
+
+        <div class="btn-container">
+          <button id="btn__letter">
+            <span>OPEN LETTER</span> <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Side Glassmorphism Profile Panel -->
+      <div class="right">
+        <div class="card-wrapper">
+          <div class="neon-circle-glow"></div>
+          <div class="image-frame">
+            <!-- If you want to use a local image later, replace this URL with ./images/img.png -->
+            <img src="./images/my-pic.jpg" alt="Birthday Person"></div>
+          <div class="floating-badge b1"><i class="fa-solid fa-cake-candles"></i></div>
+          <div class="floating-badge b2"><i class="fa-solid fa-gift"></i></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Magical Pop-up Letter Box -->
+    <div class="box__letter">
+      <div class="letter__border">
+        <div class="close-btn"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="letter-card">
+          <div class="title__letter">To KONGKON !!!<i class="fa-solid fa-heart"></i></div>
+          <div class="content__letter">
+            <p id="typed-text"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Script for Typewriter & Popup -->
+  <script>
+    const letterText = "Happy Birthday, Cutie Pie! 🎂🤍 I hope this year brings you endless happiness, sweet smiles, and everything your heart desires. You truly deserve the absolute world and all the beautiful things in it. Stay exactly as wonderful as you are, keep smiling, and enjoy every magical moment of your special day. Have an amazing birthday, pookie !!! 🥳✨";
+    let index = 0;
+
+    function typeWriter() {
+      if (index < letterText.length) {
+        document.getElementById("typed-text").innerHTML += letterText.charAt(index);
+        index++;
+        setTimeout(typeWriter, 45);
+      }
+    }
+
+    $("#btn__letter").on("click", function(){
+      $(".box__letter").fadeIn(400);
+      document.getElementById("typed-text").innerHTML = "";
+      index = 0;
+      setTimeout(typeWriter, 600);
+    });
+
+    $(".close-btn").on("click", function(){
+      $(".box__letter").fadeOut(300);
+    });
+  </script>
+</body>
+</html>

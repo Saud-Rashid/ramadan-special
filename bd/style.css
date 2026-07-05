@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Hind+Siliguri:wght@500;700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-dark: #0a0612;
+    --neon-pink: #ff2a74;
+    --neon-purple: #8a2be2;
+    --neon-cyan: #00f3ff;
+    --text-white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+    font-family: 'Comfortaa', 'Hind Siliguri', cursive;
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Cyberpunk Gradient Background */
+#wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.15), transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(255, 42, 116, 0.12), transparent 45%);
+    z-index: 2;
+}
+
+/* Layout Setup */
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+.left, .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Left Content Styles */
+.title-container {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.main-title {
+    font-size: 4.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(255, 42, 116, 0.3));
+    animation: pulseGlow 3s infinite alternate;
+}
+
+.subtitle-name {
+    font-size: 2rem;
+    color: #e0d5f5;
+    margin-top: 10px;
+    letter-spacing: 2px;
+}
+
+/* Date Ribbon Neon Style */
+.date__of__birth {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--neon-cyan);
+    padding: 10px 30px;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+/* Neon Interaction Button */
+#btn__letter {
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+    border: none;
+    padding: 14px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 25px rgba(255, 42, 116, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#btn__letter:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px rgba(255, 42, 116, 0.6);
+    filter: brightness(1.1);
+}
+
+/* Right Side: Futuristic Glass Frame */
+.card-wrapper {
+    position: relative;
+    padding: 20px;
+}
+
+.neon-circle-glow {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(25px);
+    opacity: 0.6;
+    animation: rotateBg 8s linear infinite;
+}
+
+.image-frame {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+    background-color: #110c1f;
+}
+
+.image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Floating Badges (Instead of broken image balloons) */
+.floating-badge {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    z-index: 10;
+    animation: floatingEffect 4s infinite ease-in-out;
+}
+
+.b1 { top: 10px; left: -10px; color: var(--neon-pink); }
+.b2 { bottom: 40px; right: -10px; color: var(--neon-cyan); animation-delay: 1.5s; }
+
+/* Letter Box Pop-up Design (Frosted Glass Theme) */
+.box__letter {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(5, 3, 10, 0.85);
+    backdrop-filter: blur(12px);
+    display: none;
+    z-index: 2000;
+}
+
+.letter__border {
+    width: 90%;
+    max-width: 550px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.letter-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.title__letter {
+    font-size: 2rem;
+    color: var(--neon-pink);
+    margin-bottom: 20px;
+}
+
+.content__letter p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #e2d9f3;
+}
+
+.close-btn {
+    position: absolute;
+    top: -20px; right: -20px;
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 10;
+}
+
+.close-btn:hover {
+    color: var(--neon-pink);
+    transform: scale(1.1);
+}
+
+/* Background Particle Animation Elements */
+.bg-animation {
+    position: fixed;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.bg-animation span {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50%;
+}
+.bg-animation span:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; background: var(--neon-pink); filter: blur(60px); }
+.bg-animation span:nth-child(2) { width: 120px; height: 120px; bottom: 15%; right: 15%; background: var(--neon-purple); filter: blur(80px); }
+
+/* Keyframes Animations */
+@keyframes pulseGlow {
+    0% { filter: drop-shadow(0 0 15px rgba(255, 42, 116, 0.3)); }
+    100% { filter: drop-shadow(0 0 30px rgba(255, 42, 116, 0.6)); }
+}
+
+@keyframes rotateBg {
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes floatingEffect {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+/* Mobile Responsive Setup */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column-reverse;
+        padding-top: 80px;
+        gap: 40px;
+        text-align: center;
+    }
+    .main-title { font-size: 2.8rem; }
+    .subtitle-name { font-size: 1.5rem; }
+    .image-frame { width: 240px; height: 240px; }
+    .neon-circle-glow { width: 270px; height: 270px; }
+}
