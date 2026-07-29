@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart POS - Glass Counter</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="pos-container">
+        <!-- Header -->
+        <header class="pos-header">
+            <h2><i class="fa-solid fa-glass-water"></i> Quick Order System</h2>
+            <span class="badge">Live POS</span>
+        </header>
+
+        <main class="pos-body">
+            <!-- Item Selection Panel -->
+            <section class="panel item-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-list-check"></i> Drinks List</h3>
+                    <p>Select an item to add glasses</p>
+                </div>
+                
+                <div class="item-grid">
+                    <div class="item-card" onclick="selectItem(this, 'Lemonade')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-lemon"></i></div>
+                        <h4>Lemonade</h4>
+                        <span>Glass</span>
+                    </div>
+                    <div class="item-card" onclick="selectItem(this, 'Cold Coffee')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-mug-hot"></i></div>
+                        <h4>Cold Coffee</h4>
+                        <span>Glass</span>
+                    </div>
+                    <div class="item-card" onclick="selectItem(this, 'Mango Juice')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-wine-glass"></i></div>
+                        <h4>Mango Juice</h4>
+                        <span>Glass</span>
+                    </div>
+                    <div class="item-card" onclick="selectItem(this, 'Mojito')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-martini-glass-citrus"></i></div>
+                        <h4>Mojito</h4>
+                        <span>Glass</span>
+                    </div>
+                    <div class="item-card" onclick="selectItem(this, 'Chocolate Shake')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-whiskey-glass"></i></div>
+                        <h4>Chocolate Shake</h4>
+                        <span>Glass</span>
+                    </div>
+                    <div class="item-card" onclick="selectItem(this, 'Orange Juice')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-glass-water-droplet"></i></div>
+                        <h4>Orange Juice</h4>
+                        <span>Glass</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dialpad Panel -->
+            <section class="panel dialpad-panel">
+                <div class="display-box">
+                    <div class="display-label" id="selected-item-label">Please Select Item</div>
+                    <div class="display-value-wrap">
+                        <span class="display-value" id="quantity-display">0</span>
+                        <span class="unit">Glasses</span>
+                    </div>
+                </div>
+
+                <div class="dialpad-grid">
+                    <button class="btn-num" onclick="appendNum('1')">1</button>
+                    <button class="btn-num" onclick="appendNum('2')">2</button>
+                    <button class="btn-num" onclick="appendNum('3')">3</button>
+                    <button class="btn-num" onclick="appendNum('4')">4</button>
+                    <button class="btn-num" onclick="appendNum('5')">5</button>
+                    <button class="btn-num" onclick="appendNum('6')">6</button>
+                    <button class="btn-num" onclick="appendNum('7')">7</button>
+                    <button class="btn-num" onclick="appendNum('8')">8</button>
+                    <button class="btn-num" onclick="appendNum('9')">9</button>
+                    <button class="btn-num btn-danger" onclick="clearDisplay()">C</button>
+                    <button class="btn-num" onclick="appendNum('0')">0</button>
+                    <button class="btn-num btn-warning" onclick="deleteLast()"><i class="fa-solid fa-backspace"></i></button>
+                </div>
+
+                <button class="btn-submit" onclick="submitOrder()">
+                    Confirm Order <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
